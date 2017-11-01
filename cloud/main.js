@@ -44,8 +44,6 @@ Parse.Cloud.define('updateUser', function (request, response) {
   var userData = request.params.user;
   var userId = request.params.user.id || request.params.id;
 
-  console.log(userData);
-
   if (userData instanceof Parse.User) {
     userData = {
       email: userData.get("email"),
