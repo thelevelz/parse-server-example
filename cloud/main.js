@@ -44,6 +44,8 @@ Parse.Cloud.define('updateUser', function (request, response) {
   var userData = request.params.user;
   var userId = request.params.user.id || request.params.id;
 
+  console.log(userData);
+
   if (userData instanceof Parse.User) {
     userData = {
       email: userData.get("email"),
@@ -58,6 +60,8 @@ Parse.Cloud.define('updateUser', function (request, response) {
       setupFlag: userData.get("setupFlag"),
       keyMobile: userData.get("keyMobile"),
       countryCode: userData.get("countryCode"),
+      serviceId: userData.get("serviceId"),
+      adminUserId: userData.get("adminUserId"),
     }
   } else {
     userData = {
@@ -73,6 +77,8 @@ Parse.Cloud.define('updateUser', function (request, response) {
       setupFlag: userData.setupFlag,
       keyMobile: userData.keyMobile,
       countryCode: userData.countryCode,
+      serviceId: userData.serviceId,
+      adminUserId: userData.adminUserId,
     }
   }
 
@@ -116,6 +122,18 @@ Parse.Cloud.define('updateUser', function (request, response) {
       }
       if (userData.countryCode) {
         user.set('countryCode', userData.countryCode);
+      }
+      if (userData.serviceId) {
+        var Service = Parse.Object.extend("Service");
+        var service = new Service();
+        service.set("objectId", userData.serviceId);
+        user.set('serviceId', service);
+      }
+      if (userData.adminUserId) {
+        var AdminUser = Parse.Object.extend("AdminUser");
+        var adminUser = new AdminUser();
+        adminUser.set("objectId", userData.adminUserId);
+        user.set('adminUserId', adminUser);
       }
 
       // save user
