@@ -37,12 +37,12 @@ Parse.Cloud.define('addUser', function (request, response) {
 Parse.Cloud.define('updateUser', function (request, response) {
   Parse.Cloud.useMasterKey();
 
-  if (!request.params.user || !request.params.user.id) {
+  if (!request.params.user || (!request.params.user.id && !request.params.id)) {
     response.error('Missing data.');
   }
 
   var userData = request.params.user;
-  var userId = request.params.user.id;
+  var userId = request.params.user.id || request.params.id;
 
   if (userData instanceof Parse.User) {
     userData = {
@@ -54,7 +54,7 @@ Parse.Cloud.define('updateUser', function (request, response) {
       emailVerified: userData.get("emailVerified"),
       mobileVerification: userData.get("mobileVerification"),
       emailVerification: userData.get("emailVerification"),
-      deskNo: userData.get("deskNo"),
+      deskNo: String(userData.get("deskNo")),
       setupFlag: userData.get("setupFlag"),
       keyMobile: userData.get("keyMobile"),
       countryCode: userData.get("countryCode"),
@@ -69,7 +69,7 @@ Parse.Cloud.define('updateUser', function (request, response) {
       emailVerified: userData.emailVerified,
       mobileVerification: userData.mobileVerification,
       emailVerification: userData.emailVerification,
-      deskNo: userData.desk || userData.deskNo,
+      deskNo: String(userData.desk) || String(userData.deskNo),
       setupFlag: userData.setupFlag,
       keyMobile: userData.keyMobile,
       countryCode: userData.countryCode,
