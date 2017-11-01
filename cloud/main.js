@@ -23,7 +23,7 @@ Parse.Cloud.define('addUser', function (request, response) {
   user.set('password', _user.password);
   user.set('position', _user.position);
   user.set('emailVerified', true);
-  if (!user.desk) {
+  if (user.desk) {
     user.set('deskNo', _user.desk);
   }
 
@@ -31,5 +31,103 @@ Parse.Cloud.define('addUser', function (request, response) {
     response.success(user);
   }, function (error) {
     response.error(error);
+  });
+});
+
+Parse.Cloud.define('updateUser', function (request, response) {
+  Parse.Cloud.useMasterKey();
+
+  if (!request.params.user || !request.params.user.id) {
+    response.error('Missing data.');
+  }
+
+  var userData = request.params.user;
+  var userId = request.params.user.id;
+
+  if (userData instanceof Parse.User) {
+    userData = {
+      email: userData.get("email"),
+      firstName: userData.get("firstName"),
+      mobile: userData.get("mobile"),
+      password: userData.get("password"),
+      position: userData.get("position"),
+      emailVerified: userData.get("emailVerified"),
+      mobileVerification: userData.get("mobileVerification"),
+      emailVerification: userData.get("emailVerification"),
+      deskNo: userData.get("deskNo"),
+      setupFlag: userData.get("setupFlag"),
+      keyMobile: userData.get("keyMobile"),
+      countryCode: userData.get("countryCode"),
+    }
+  } else {
+    userData = {
+      email: userData.email,
+      firstName: userData.firstName,
+      mobile: userData.mobile,
+      password: userData.password,
+      position: userData.position,
+      emailVerified: userData.emailVerified,
+      mobileVerification: userData.mobileVerification,
+      emailVerification: userData.emailVerification,
+      deskNo: userData.desk || userData.deskNo,
+      setupFlag: userData.setupFlag,
+      keyMobile: userData.keyMobile,
+      countryCode: userData.countryCode,
+    }
+  }
+
+  var query = new Parse.Query(Parse.User);
+  query.equalTo("objectId", userId);
+  query.first({
+    success: function (user) {
+      if (userData.email) {
+        user.set('username', userData.email);
+        user.set('email', userData.email);
+      }
+      if (userData.firstName) {
+        user.set('firstName', userData.firstName);
+      }
+      if (userData.mobile) {
+        user.set('mobile', userData.mobile);
+      }
+      if (userData.password) {
+        user.set('password', userData.password);
+      }
+      if (userData.position) {
+        user.set('position', userData.position);
+      }
+      if (userData.emailVerified !== null || userData.emailVerified !== undefined) {
+        user.set('emailVerified', userData.emailVerified);
+      }
+      if (userData.emailVerification !== null || userData.emailVerification !== undefined) {
+        user.set('emailVerification', userData.emailVerification);
+      }
+      if (userData.mobileVerification !== null || userData.mobileVerification !== undefined) {
+        user.set('mobileVerification', userData.mobileVerification);
+      }
+      if (userData.deskNo) {
+        user.set('deskNo', userData.deskNo);
+      }
+      if (userData.setupFlag) {
+        user.set('setupFlag', userData.setupFlag);
+      }
+      if (userData.keyMobile) {
+        user.set('keyMobile', userData.keyMobile);
+      }
+      if (userData.countryCode) {
+        user.set('countryCode', userData.countryCode);
+      }
+
+      // save user
+      Parse.Object.saveAll(user, { useMasterKey: true }).then(function (user) {
+        response.success(user);
+      }, function (error) {
+        response.error(error);
+      });
+
+    },
+    error: function (error) {
+      response.error(error);
+    }
   });
 });
