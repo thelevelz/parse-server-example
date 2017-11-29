@@ -11,7 +11,7 @@ if (!databaseUri) {
 }
 
 var api = new ParseServer({
-  databaseURI: databaseUri || 'mongodb://skiplino:1level4Ever@40.118.106.127:27017/skiplino?replicaSet=skiplinoR',
+  databaseURI: databaseUri || 'mongodb://skiplino:1level4Ever@business.skiplino.com:27017/skiplino?replicaSet=skiplinoR',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'SNGwxRJtpmfQRsktuWlroFgNGpfomqxKwNWr5jwL',
   masterKey: process.env.MASTER_KEY || 'PBOXhFupoCdGAVddvRPOccG0XPi4vW4G6D1iVBg2', //Add your master key here. Keep it secret!
