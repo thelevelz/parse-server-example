@@ -84,6 +84,12 @@ Parse.Cloud.define('updateUser', function (request, response) {
   query.equalTo("objectId", userId);
   query.first({
     success: function (user) {
+      if (userData.password) {
+        user.set('password', userData.password);
+        Parse.Cloud.useMasterKey();
+        user.save(null, {useMasterKey: true});
+        user.revert();
+      }
       if (userData.email) {
         user.set('username', userData.email);
         user.set('email', userData.email);
@@ -93,9 +99,6 @@ Parse.Cloud.define('updateUser', function (request, response) {
       }
       if (userData.mobile) {
         user.set('mobile', userData.mobile);
-      }
-      if (userData.password) {
-        user.set('password', userData.password);
       }
       if (userData.position) {
         user.set('position', userData.position);
